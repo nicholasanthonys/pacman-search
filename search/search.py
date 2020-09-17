@@ -123,34 +123,6 @@ def doDfs(problem):
                 doDfs(problem)
         visited.pop()
     return path
-    # allVisited = True
-    # for suc in successors:
-    #     if suc[0] not in visited:
-    #         allVisited = False
-    #         MyPriorityQueue.push(suc[0], - (len(visited) + 5 - suc[0][1]))
-    #     current = MyPriorityQueue.pop()
-    #     isempty = MyPriorityQueue.isEmpty()
-    #     isGoalFound = doDfs(problem, current)
-    #     if(isGoalFound) :
-    #         break
-    #     visited.pop()
-    # else:
-    #     visited.pop()
-    #     return False
-    return path
-
-
-def pushToPriorityQueue(sucessors):
-    for suc in sucessors:
-        if suc[0] not in visited:
-            ## most depth and minimum Y as a priority
-
-            ## i add minus in len visited because priority queue will pop minimum priority first
-            ## i also add 5-suc[0][1] because if successors is 4,5 and 5,4, i want 4,5 to be popped first,
-            ## hence 5-5 is 0, but 5-4 is 1, then if len visited is 0, priority for 5,5 is -0 + 0 = 0, but
-            ## priority for 5,4 is -0 -1 = -1, then 5,4 will be picked first
-            MyPriorityQueue.push(suc, - (len(visited) + 5 - suc[0][1]))
-
 
 def getDirection(coor1, coor2):
     if abs(coor2[1] - coor1[1]) == 1:
