@@ -82,6 +82,7 @@ def tinyMazeSearch(problem):
 visited = []
 path = []
 MyPriorityQueue = util.PriorityQueue()
+found = False
 
 
 def depthFirstSearch(problem):
@@ -103,41 +104,40 @@ def depthFirstSearch(problem):
     print("successor ", problem.getStartState(), " is ")
     print(successor)
 
-    visited.append(problem.getStartState())
-    pushToPriorityQueue(successor)
-
-    while not MyPriorityQueue.isEmpty():
-        current = MyPriorityQueue.pop()
-        tempVisited = visited
-        visitedLength = len(tempVisited)
-        if current[0] not in problem.getStartState():
-            path.append(getDirection(current[1]))
-            visited.append(current[0])
-
-            if current[0] == problem.goal:
-                return path
-            newSuccessors = problem.getSuccessors(current[0])
-
-            listCoordinate = []
-            for suc in newSuccessors:
-                if suc[0] not in visited:
-                    listCoordinate.append(suc[0])
-            if len(listCoordinate) > 0 :
-                for coor in listCoordinate:
-
-                    while coor in visited:
-                        visited.pop()
-
-                        path.pop()
-                else:
-                    pushToPriorityQueue(newSuccessors)
-            else :
-                for newSuc in newSuccessors :
-                    while newSuc[0] in visited:
-                        visited.pop()
-                        path.pop()
+    start = problem.getStartState()
+    MyPriorityQueue.push(start, - (len(visited) + 5 - start[1]))
+    return doDfs(problem)
 
 
+def doDfs(problem):
+    current = MyPriorityQueue.pop()
+    visited.append(current)
+    if current == problem.goal:
+        for i in range(len(visited) - 1):
+            path.append(getDirection(visited[i], visited[i + 1]))
+    else:
+        successors = problem.getSuccessors(current)
+        for suc in successors:
+            if suc[0] not in visited:
+                MyPriorityQueue.push(suc[0], - (len(visited) + 5 - suc[0][1]))
+                doDfs(problem)
+        visited.pop()
+    return path
+    # allVisited = True
+    # for suc in successors:
+    #     if suc[0] not in visited:
+    #         allVisited = False
+    #         MyPriorityQueue.push(suc[0], - (len(visited) + 5 - suc[0][1]))
+    #     current = MyPriorityQueue.pop()
+    #     isempty = MyPriorityQueue.isEmpty()
+    #     isGoalFound = doDfs(problem, current)
+    #     if(isGoalFound) :
+    #         break
+    #     visited.pop()
+    # else:
+    #     visited.pop()
+    #     return False
+    return path
 
 
 def pushToPriorityQueue(sucessors):
@@ -152,15 +152,17 @@ def pushToPriorityQueue(sucessors):
             MyPriorityQueue.push(suc, - (len(visited) + 5 - suc[0][1]))
 
 
-def getDirection(direction):
-    if direction == "South":
-        return Directions.SOUTH
-    if direction == "North":
-        return Directions.NORTH
-    if direction == "East":
-        return Directions.EAST
-    if direction == "West":
-        return Directions.WEST
+def getDirection(coor1, coor2):
+    if abs(coor2[1] - coor1[1]) == 1:
+        if coor2[1] > coor1[1]:
+            return Directions.NORTH
+        else:
+            return Directions.SOUTH
+    if abs(coor2[0] - coor1[0]) == 1:
+        if coor2[0] > coor1[0]:
+            return Directions.EAST
+        else:
+            return Directions.WEST
 
 
 def breadthFirstSearch(problem):
